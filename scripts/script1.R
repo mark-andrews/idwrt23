@@ -199,4 +199,100 @@ filter(blp_df, (lex == 'W') & (resp == 'W') | !(rt <= 500))
 # filter where their response correct
 filter(blp_df, lex == resp)
 
-filter()
+# find rows where there is at least one missing value
+filter(blp_df, if_any(everything(), is.na))
+
+filter(blp_df, if_all(everything(), is.na))
+
+
+filter(blp_df, if_all(everything(), ~!is.na(.)))
+
+# by the way, you can also do ....
+drop_na(blp_df)
+na.omit(blp_df)
+
+# this 
+# ~ . <= 500
+# could be written as 
+# function(x){
+# x <= 500
+# }
+
+
+filter(blp_df, if_all(matches('^rt|rt$'), ~ . <= 500))
+filter(blp_df, if_any(matches('^rt|rt$'), ~ . <= 500))
+
+# the previous if_all command is equivalent to this:
+filter(blp_df, rt <= 500, prev.rt <= 500, rt.raw <= 500)
+
+# the previous if_any command is equivalent to this:
+filter(blp_df, rt <= 500 | prev.rt <= 500 | rt.raw <= 500)
+
+filter(blp_df, if_all(where(is.numeric), ~ . < median(., na.rm = TRUE)))
+
+
+
+# Create new variables with mutate ----------------------------------------
+
+mutate(blp_df, accuracy = lex == resp)
+
+mutate(blp_df,
+       accuracy = lex == resp,
+       fast_response = rt < 500)
+
+mutate(blp_df, rt = rt / 1000)
+
+mutate(blp_df,
+       accuracy = lex == resp,
+       fast_response = rt < 500,
+       rt = rt /1000)
+
+# the previous code is different to 
+mutate(blp_df,
+       accuracy = lex == resp,
+       rt = rt / 1000,
+       fast_response = rt < 500)
+
+
+mutate(blp_df, 
+       lex = as.factor(lex),
+       spell = as.factor(spell),
+       resp = as.factor(resp)
+)
+
+mutate(blp_df, across(where(is.character), as.factor))
+
+
+re_scale <- function(x) as.vector(scale(x))
+
+mutate(blp_df, across(where(is.numeric), re_scale))
+mutate(blp_df, across(where(is.numeric), ~ as.vector(scale(.)) ))
+
+
+mutate(blp_df, 
+       lex = recode(lex, 'W' = 'word', 'N' = 'nonword'))
+
+mutate(blp_df,
+       across(c(lex, resp), 
+              ~ recode(., 'W' = 'word', 'N' = 'nonword'))
+)
+
+mutate(blp_df,
+       fast_response = if_else(rt < 500, 'fast', 'slow')
+)
+
+mutate(blp_df,
+       rt_speed = case_when(
+         rt > 900 ~ 'slow',
+         rt < 500 ~ 'fast',
+         (rt >= 500) & (rt <= 900) ~ 'medium'
+       )
+)
+
+mutate(blp_df,
+       rt_speed = case_when(
+         rt > 900 ~ 'slow',
+         rt < 500 ~ 'fast',
+         TRUE ~ 'medium'
+       )
+)
