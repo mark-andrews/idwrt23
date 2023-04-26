@@ -62,3 +62,49 @@ select(blp_df, starts_with('r'))
 select(blp_df, starts_with('rt'))
 
 select(blp_df, ends_with('t'))
+
+select(blp_df, contains('rt'))
+
+select(blp_df, matches('^rt')) # equivalent to starts_with
+select(blp_df, matches('rt$')) # equivalent to ends_with
+select(blp_df, matches('^rt|rt$'))
+
+# all but `participant`
+select(blp_df, -participant)
+select(blp_df, -participant, -rt)
+select(blp_df, -c(participant, rt))
+
+select(blp_df, lex:rt)
+select(blp_df, -(lex:rt))
+
+select(blp_df, -(2:5))
+
+# select the numeric variables
+select(blp_df, where(is.numeric))
+select(blp_df, -where(is.numeric))
+
+has_high_mean <- function(x) {
+  is.numeric(x) && mean(x, na.rm = TRUE) > 500
+}
+
+select(blp_df, where(has_high_mean))
+
+# has_high_mean(participant)
+# has_high_mean(lex)
+
+# anonymous function
+select(blp_df, where(function(x) {
+  is.numeric(x) && mean(x, na.rm = TRUE) > 500
+}))
+
+# purrr style lambda anonymous function
+select(blp_df, where(~{
+  is.numeric(.) && mean(., na.rm = TRUE) > 500
+}))
+
+# ~ <=> function(.)
+
+# select "everything"
+select(blp_df, everything())
+
+select(blp_df, rt, everything())
