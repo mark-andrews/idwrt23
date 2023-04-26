@@ -1,5 +1,43 @@
 # Introduction to Data Wrangling using R and Tidyverse
 
-## Software requirements
+On this two-day course, you will gain a comprehensive practical introduction to data wrangling using R. In particular, we focus on tools provided by R's `tidyverse`, including `dplyr`, `tidyr`, `purrr`, etc. Data wrangling is the art of taking raw and messy data and formating and cleaning it so that data analysis and visualization etc may be performed on it. Done poorly, it can be a time consuming, labourious, and error-prone. Fortunately, the tools provided by R's `tidyverse` allow us to do data wrangling in a fast, efficient, and high-level manner, which can have dramatic consequence for ease and speed with which we analyse data.
 
-Instructions on how to install the required software can be found [here](software.md).
+This course is aimed at anyone who is involved in real world data analysis, where the raw data is messy and complex. Data analysis of this kind is practiced widely throughout academic scientific research, as well as widely throughout the public and private sectors.
+
+The course will cover these key topics:
+
+* Reading in data into R using tools such as readr and readxl
+* Wrangling with the powerful `dplyr` R package, focusing on filtering observations, selecting and modifying variables, and other major data manipulation operations
+* Summarising data in `dplyr` using descriptive statistics
+* Merging and joining data independent data frames
+* Pivoting and reshaping data using the `tidyr` R package
+
+The course will take 6 contact hours per day plus two 2-hour breaks.
+
+The sessions will be as follows:
+
+* Session 1: 9:30am-11:30am;
+* Session 2: 12:30am-2:30pm;
+* Session 3: 3:30pm-17:30pm
+
+# Tutor Profile
+
+Mark Andrews is an Associate Professor at Nottingham Trent University whose research and teaching is focused on statistical methodology in research in the social and biological sciences. He is the author of 2021 textbook on data science using R that is aimed at scientific researchers, and has a forthcoming new textbook on statistics and data science that is aimed at undergraduates in science courses. His background is in computational cognitive science and mathematical psychology.
+
+# Equipment and software requirements
+
+Details on the software that we will use is available [here](software.md).
+
+# Course programme 
+
+## Day 1 
+
+* Topic 1: *Reading in data*. We will begin by reading in data into R using tools such as `readr` and `readxl`. Almost all types of data can be read into R, and here we will consider many of the main types, such as `csv`, `xlsx`, `sav`, etc. Here, we will also consider how to contol how data are parsed, e.g., so that they are read as dates, numbers, strings, etc.
+* Topic 2: *Wrangling with `dplyr`*. For the remainder of Day 1, we will next cover the very powerful `dplyr` R package. This package supplies a number of so-called "verbs" --- `select`, `rename`, `slice`, `filter`, `mutate`, `arrange`, etc. --- each of which focuses on a key data manipulation tools, such as selecting or changing variables. These verbs also have `_if`, `_at`, `_all` variants that we will consider. All of these verbs can be chained together using "pipes" (represented by `%>%`). Together, these create powerful data wrangling pipelines that take raw data as input and return cleaned data as output. Here, we will also learn about the key concept of "tidy data", which is roughly where each row of a data frame is an observation and each column is a variable.
+
+## Day 2
+
+* Topic 3: *Summarizing data*. The `summarize` and `group_by` tools in `dplyr` can be used with great effect to summarize data using descriptive statistics. 
+* Topic 4: *Merging and joining data frames*. There are multiple ways to combine data frames, with the simplest being "bind" operations, which are effectively horizontal or vertical concatenations. Much more powerful are the SQL like "join" operations. Here, we will consider the `inner_join`, `left_join`, `right_join`, `full_join` operations. In this section, we will also consider how to use `purrr` to read in and automatically merge large sets of files.
+* Topic 5: *Pivoting data*. Sometimes we need to change data frames from "long" to "wide" formats. The R package `tidyr` provides the tools `pivot_longer` and `pivot_wider` for doing this.
+
