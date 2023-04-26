@@ -108,3 +108,95 @@ select(blp_df, where(~{
 select(blp_df, everything())
 
 select(blp_df, rt, everything())
+
+
+# Reordering columns with relocate ----------------------------------------
+
+relocate(blp_df, rt)
+relocate(blp_df, starts_with('r'))
+
+relocate(blp_df, rt, .after = lex)
+relocate(blp_df, rt, .before = lex)
+
+relocate(blp_df, rt, .after = rt.raw)
+relocate(blp_df, rt, .after = last_col())
+relocate(blp_df, rt, .before = last_col())
+
+relocate(blp_df, where(is.numeric))
+
+relocate(blp_df, where(is.numeric), .after = last_col())
+
+
+
+# Renaming with rename ----------------------------------------------------
+
+select(blp_df, reaction_time = rt)
+select(blp_df, reaction_time = rt, everything())
+
+rename(blp_df, reaction_time = rt)
+
+rename(blp_df, reaction_time = rt, lexical = lex)
+
+rename_with(blp_df, toupper)
+rename_with(blp_df, tolower)
+
+# rename all numeric variables to uppercase
+rename_with(.data = blp_df, .fn = toupper, .cols = where(is.numeric))
+
+# let's look at `str_replace`
+y <- c('hello', 'world')
+str_replace(y, 'he', 'xx')
+
+# ~str_replace(., 'rt', 'reaction_time')
+
+rename_with(.data = blp_df, 
+            .fn = ~str_replace(., 'rt', 'reaction_time'),
+            .cols = matches('^rt|rt$'))
+
+rename_with(.fn = ~str_replace(., 'rt', 'reaction_time'),
+            .data = blp_df,
+            .cols = matches('^rt|rt$'))
+
+
+# Slicing with slice ------------------------------------------------------
+
+slice(blp_df, 5)
+
+slice(blp_df, 5:15)
+
+slice(blp_df, c(10, 20, 50, 100, 500, 800))
+
+slice(blp_df, seq(10, 1000, by = 10))
+
+slice(blp_df, -10)
+
+slice(blp_df, -(1:3))
+
+slice(blp_df, 990:1000)
+slice(blp_df, 990:n())
+slice(blp_df, (n()-10):n())
+
+
+# Filtering with filter ---------------------------------------------------
+
+filter(blp_df, participant == 20)
+
+filter(blp_df, lex == 'W', resp == 'W')
+filter(blp_df, rt < 500)
+filter(blp_df, rt <= 500)
+
+# the following 
+filter(blp_df, lex == 'W', resp == 'W', rt <= 500)
+# is equivalent to this:
+filter(blp_df, (lex == 'W') & (resp == 'W') & (rt <= 500))
+
+# disjunction of conditions
+filter(blp_df, lex == 'W' | rt <= 500)
+
+filter(blp_df, (lex == 'W') & (resp == 'W') | (rt <= 500))
+filter(blp_df, (lex == 'W') & (resp == 'W') | !(rt <= 500))
+
+# filter where their response correct
+filter(blp_df, lex == resp)
+
+filter()
