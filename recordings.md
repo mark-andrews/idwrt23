@@ -10,3 +10,4 @@ Links to video recordings will be added here.
 
 * [Session 1](https://vimeo.com/821614507)
 * [Session 2](https://vimeo.com/821676685)
+* [Session 3](https://vimeo.com/821737423)
