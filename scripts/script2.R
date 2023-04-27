@@ -57,3 +57,42 @@ anti_join(Df_b, Df_a)
 
 # let's get real
 blp_stimuli <- read_csv("https://raw.githubusercontent.com/mark-andrews/idwrt23/main/data/blp_stimuli.csv")
+
+
+left_join(blp_df, blp_stimuli)
+
+filter(blp_stimuli, spell == 'staud')
+
+
+right_join(blp_df, blp_stimuli)
+
+
+inner_join(blp_df, blp_stimuli)
+
+all.equal(inner_join(blp_df, blp_stimuli),
+          left_join(blp_df, blp_stimuli))
+
+
+Df_9 <- tibble(spell = c('cat', 'dog'),
+               rt = c(100, 200))
+Df_10 <- tibble(spell = c('cat', 'cat', 'dog'),
+                old20 = c(5, 10, 20))
+
+left_join(Df_9, Df_10)
+
+
+Df_11 <- tibble(x = c(1, 2), y = c(42, 52))
+Df_12 <- tibble(x = c('1', '2'), z = c('foo', 'bar'))
+
+left_join(Df_11, Df_12)
+
+
+Df_13 <- tibble(x = as.factor(c(1, 2)), y = c(42, 52))
+Df_14 <- tibble(x = c('1', '2'), z = c('foo', 'bar'))
+
+left_join(Df_13, Df_14)
+
+
+inner_join(Df_4, Df_5)
+inner_join(Df_4, rename(Df_5, x = a))
+inner_join(Df_4, Df_5, by = c("x" = "a"))

@@ -9,3 +9,4 @@ Links to video recordings will be added here.
 # Day 2
 
 * [Session 1](https://vimeo.com/821614507)
+* [Session 2](https://vimeo.com/821676685)
