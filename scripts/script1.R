@@ -296,3 +296,63 @@ mutate(blp_df,
          TRUE ~ 'medium'
        )
 )
+
+transmute(blp_df,
+       rt_speed = case_when(
+         rt > 900 ~ 'slow',
+         rt < 500 ~ 'fast',
+         TRUE ~ 'medium'
+       )
+)
+
+
+# Sorting with arrange ----------------------------------------------------
+
+arrange(blp_df, rt)
+arrange(blp_df, desc(rt))
+arrange(blp_df, spell)
+arrange(blp_df, participant)
+arrange(blp_df, participant, rt)
+
+
+# Introducting the pipe ---------------------------------------------------
+
+x <- c(2, 3, 5, 7, 11)
+
+# we want the log of the sum of the sqrt of the log of x
+log(x) # the log of x
+sqrt(log(x)) # the sqrt of the log of x
+sum(sqrt(log(x))) # sum of sqrt of log of x
+log(sum(sqrt(log(x)))) # log of sum of sqrt of log of x
+
+log(x) %>% sqrt() # equivalent to sqrt(log(x))
+
+x %>% log() %>% sqrt() # same thing, equivalent to sqrt(log(x))
+
+x %>% log() %>% sqrt() %>% sum() %>% log() # equiv to log(sum(sqrt(log(x))))
+
+
+
+# A data wrangling pipeline -----------------------------------------------
+
+read_csv("https://raw.githubusercontent.com/mark-andrews/idwrt23/main/data/blp-trials-short.txt") %>% 
+  mutate(participant = as.factor(participant),
+         accuracy = lex == resp) %>% 
+  # the next lines do renaming
+  rename(subject = participant,
+         stimulus = spell,
+         reaction_time = rt) %>% 
+  select(subject, stimulus, lex, accuracy, reaction_time) %>% 
+  filter(lex == 'W', accuracy, 
+         reaction_time < 1500 & reaction_time > 500) %>% 
+  na.omit()
+
+
+blp_df %>% 
+  mutate(participant = as.factor(participant),
+         accuracy = lex == resp) %>% 
+  select(subject = participant, 
+         stimulus = spell, 
+         lex, 
+         accuracy, 
+         reaction_time = rt)
