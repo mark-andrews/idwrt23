@@ -96,3 +96,103 @@ left_join(Df_13, Df_14)
 inner_join(Df_4, Df_5)
 inner_join(Df_4, rename(Df_5, x = a))
 inner_join(Df_4, Df_5, by = c("x" = "a"))
+
+
+# Reading in multiple files etc -------------------------------------------
+
+library(fs)
+dir_ls('exp_data') %>% map(read_csv) %>% bind_rows()
+dir_ls('exp_data') %>% map_dfr(read_csv, .id = 'subject')
+
+
+# Reshaping with pivots ---------------------------------------------------
+
+recall_df <- read_csv("https://raw.githubusercontent.com/mark-andrews/idwrt23/main/data/repeated_measured_a.csv")
+
+recall_df_long <- 
+  pivot_longer(recall_df,
+               -Subject,
+               names_to = 'condition',
+               values_to = 'memory')
+
+
+pivot_wider(recall_df_long,
+            names_from = condition,
+            values_from = memory)
+
+recall_df_b <- read_csv("https://raw.githubusercontent.com/mark-andrews/idwrt23/main/data/repeated_measured_b.csv")
+
+# this pipeline 
+pivot_longer(recall_df_b,
+             -Subject,
+             names_to = 'condition',
+             values_to = 'memory') %>% 
+  separate(col = condition, 
+           into = c("cue", "emotion"),
+           sep = '_')
+
+# is equivalent to this one command
+pivot_longer(recall_df_b,
+             -Subject,
+             names_to = c("cue", "emotion"),
+             names_sep = '_',
+             values_to = 'memory')
+
+# and also it is equivalent to this 
+pivot_longer(recall_df_b,
+             -Subject,
+             names_to = c("cue", "emotion"),
+             names_pattern = "(.*)_(.*)",
+             values_to = 'memory')
+
+
+blp_df_summ <- 
+  blp_df %>% 
+  drop_na() %>%
+  summarise(across(rt:rt.raw,
+                   list(median = median, mad = mad)
+  )
+  )
+      
+# this pipeline ....
+pivot_longer(blp_df_summ,
+             everything(),
+             names_to = 'summary',
+             values_to = 'value') %>% 
+  separate(summary, into = c("var", "descriptive"), sep = '_') %>% 
+  pivot_wider(names_from = descriptive,
+              values_from = value)
+
+
+# is equivalent to this ....
+pivot_longer(blp_df_summ,
+             everything(),
+             names_to = c("var", ".value"),
+             names_sep = '_') 
+
+
+# Nesting -----------------------------------------------------------------
+
+
+tidy_df <- read_csv("https://raw.githubusercontent.com/mark-andrews/idwrt23/main/data/example_1_tidy.csv")
+
+group_by(tidy_df, subject) %>% 
+  summarise(accuracy = mean(accuracy))
+
+group_by(tidy_df, subject) %>% 
+  nest() %>% 
+  mutate(number_of_rows = map_int(data, nrow)) %>% 
+  select(-data)
+
+
+# using `tidy_df` do a linear regression predicting `rt` from `delta`
+# and return the slope coefficents (which is second value of coef)
+coef(lm(rt ~ delta, data = tidy_df))[2]
+
+# Now do that same thing for each subject in the data set
+tidy_df %>% 
+  group_by(subject) %>% 
+  nest() %>% 
+  mutate(slope = map_dbl(data, ~coef(lm(rt ~ delta, data = .))[2])) %>% 
+  ungroup() %>% 
+  select(-data)
